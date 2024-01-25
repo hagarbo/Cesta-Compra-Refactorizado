@@ -1,3 +1,10 @@
+<?php
+
+const CART_FILES = ["listado.php", "cesta.php"];
+const NO_HEADER_FILES = ["login.php"];
+
+?>
+
 <!doctype html>
 <html lang="es">
 
@@ -11,3 +18,23 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <title><?php echo $title; ?></title>
 </head>
+
+<body style="background: gray">
+    <?php
+    $current_file = basename($_SERVER['PHP_SELF'], '');
+    if (!in_array($current_file, NO_HEADER_FILES)) :
+    ?>
+        <div class="float float-right d-inline-flex mt-2">
+            <?php
+            if (in_array($current_file, CART_FILES)) :
+            ?>
+                <i class="fa fa-shopping-cart mr-2 fa-2x"></i>
+                <input type='text' disabled class='form-control mr-2 bg-transparent text-white' value='<?php echo $contador_cesta; ?>' size='2px'>
+            <?php endif; ?>
+
+            <i class="fas fa-user mr-3 fa-2x"></i>
+            <input type="text" size='10px' value="<?php echo $_SESSION['nombre']; ?>" class="form-control mr-2 bg-transparent text-white" disabled>
+            <a href="cerrar.php" class="btn btn-warning mr-2">Salir</a>
+        </div>
+        <br>
+    <?php endif; ?>

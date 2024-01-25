@@ -2,7 +2,7 @@
 
 require_once "conexion.php";
 
-function consultarProducto($id)
+function consultar_producto($id)
 {
     $conn = getConnection();
     $consulta = "select * from productos where id=:i";
@@ -18,7 +18,7 @@ function consultarProducto($id)
     return $producto;
 }
 
-function getProductList(): array
+function get_product_list(): array
 {
     $result = array();
     try {
@@ -36,10 +36,11 @@ function getProductList(): array
 }
 
 
-function validate_user(string $nombre, string $pass) : bool{
+function validate_user(string $nombre, string $pass): bool
+{
     //creamos el sha256 de la contraseña que es como se almacena en mysql
     $is_valid_user = false;
-    $hashed_pass = hash('sha256', $pass);    
+    $hashed_pass = hash('sha256', $pass);
     try {
         $conn = getConnection();
         $consulta = "select * from usuarios where usuario=:u AND pass=:p";
@@ -49,8 +50,8 @@ function validate_user(string $nombre, string $pass) : bool{
             ':p' => $hashed_pass
         ]);
     } catch (PDOException $ex) {
-        cerrarTodo($conProyecto, $stmt);
-        die("Error en la consulta a la base de datos.".$ex->getMessage());
+        cerrarTodo($conn, $stmt);
+        die("Error en la consulta a la base de datos." . $ex->getMessage());
     }
     if ($stmt->rowCount() != 0)
         $is_valid_user = true;

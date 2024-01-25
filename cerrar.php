@@ -1,5 +1,3 @@
 <?php
-session_start();
-unset($_SESSION['nombre']);
-unset($_SESSION['cesta']);
-header('Location:login.php');
+require_once 'util/util.php';
+cerrar_sesion();

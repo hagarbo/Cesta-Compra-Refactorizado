@@ -1,12 +1,12 @@
 <?php
-session_start();
 require_once 'model/db_functions.php';
-function error($mensaje)
-{
-    $_SESSION['error'] = $mensaje;
-    header('Location:login.php');
-    die();
+require_once 'util/util.php';
+
+if (is_user_logged()) {
+    header("Location: listado.php");
+    exit;
 }
+
 // Intentamos hacer el login
 if (isset($_POST['login'])) {
     $nombre = trim($_POST['usuario']);
@@ -14,8 +14,8 @@ if (isset($_POST['login'])) {
     if (strlen($nombre) == 0 || strlen($pass) == 0) {
         error("Error, El nombre o la contraseña no pueden contener solo espacios en blancos.");
     }
-    
-    if (validate_user($nombre, $pass) == false){
+
+    if (validate_user($nombre, $pass) == false) {
         unset($_POST['login']);
         error("Error, Nombre de usuario o password incorrecto");
     }
@@ -24,7 +24,7 @@ if (isset($_POST['login'])) {
 
     $_SESSION['nombre'] = $nombre;
     header('Location:listado.php');
-} 
+}
 
 $title = "Login";
 require_once "templates/header.php";
@@ -60,12 +60,12 @@ require_once "templates/header.php";
             </div>
         </div>
         <?php
-            if (isset($_SESSION['error'])) {
-                echo "<div class='mt-3 text-danger font-weight-bold text-lg'>";
-                echo $_SESSION['error'];
-                unset($_SESSION['error']);
-                echo "</div>";
-            }
+        if (isset($_SESSION['error'])) {
+            echo "<div class='mt-3 text-danger font-weight-bold text-lg'>";
+            echo $_SESSION['error'];
+            unset($_SESSION['error']);
+            echo "</div>";
+        }
         ?>
     </div>
 </body>
