@@ -92,18 +92,20 @@ function mostrar_productos()
                 <tr class="text-center">
                     <th scope="col">Añadir</th>
                     <th scope="col">Nombre</th>
+                    <th scope="col">Unidades</th>
                     <th scope="col">Añadido</th>
                 </tr>
             </thead>
             <tbody>';
     foreach ($filas as $key => $value) {
         echo "<tr><th scope='row' class='text-center'>";
-        echo "<form action='{$_SERVER['PHP_SELF']}' method='POST'>";
+        echo "<form action='{$_SERVER['PHP_SELF']}' method='POST' id='form-{$value->id}'>";
         echo "<input type='hidden' name='id' value='{$value->id}'>";
         echo "<input type='submit' class='btn btn-primary' name='comprar' value='Añadir'>";
         echo "</form>";
         echo "</th>";
         echo "<td>{$value->nombre}, Precio: {$value->pvp} (€)</td>";
+        echo "<td><input type='number' name='unidades' value='1' form='form-{$value->id}' min='1' max='3'/></td>";
         echo "<td class='text-center'>";
         echo isset($_SESSION['cesta'][$value->id]) ?
             "<i class='fas fa-check fa-2x'></i>" : "<i class='far fa-times-circle fa-2x'></i>";
@@ -119,21 +121,47 @@ function mostrar_cesta(array $cesta)
         echo "<p class='card-text'>Carrito Vacio</p>";
     } else {
         $total = 0;
-        echo "<p class='card-text'>";
-        echo "<ul>";
-        foreach ($cesta as $k => $v) {
-            echo "<li>$v[0], PVP ($v[1]) €.</li>";
-            $total += $v[1];
+        echo '<table class="table table-striped mt-3">
+            <thead>
+                <tr class="text-center">
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Precio Unidad</th>
+                    <th scope="col">Unidades</th>
+                    <th scope="col">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>';
+        foreach ($cesta as $product_id => $datos) {
+            $subtotal = $datos['product_price'] * $datos['product_units'];
+            $total += $subtotal;
+
+            echo "<tr>";
+            echo "<td>{$datos['product_name']}</td>";
+            echo "<td>" . number_format($datos['product_price'], 2, '.', ',') . " €</td>";
+            echo "<td>{$datos['product_units']}</td>";
+            echo "<td>" . number_format($subtotal, 2, '.', ',') . " €</td>";
+            echo "</tr>";
         }
-        echo "</ul></p>";
+        echo "</tbody></table>";
         echo "<hr style='border:none; height:2px; background-color: white'>";
-        echo "<p class='card-text'><b>Total:</b><span class='ml-3'>$total (€)</span></p>";
+        echo "<p class='card-text'><b>Total:</b><span class='ml-3'>" . number_format($total, 2, '.', ',') . " (€)</span></p>";
     }
 }
 
-function error(string $mensaje)
+function error(string $mensaje, string $location)
 {
     $_SESSION['error'] = $mensaje;
-    header('Location:login.php');
+    header("Location:$location.php");
     die();
+}
+
+function comprobar_unidades(int $unidades): bool
+{
+    return $unidades >= 1 && $unidades <= 3;
+}
+
+function vaciar_carrito()
+{
+    if (isset($_SESSION['cesta']))
+        unset($_SESSION['cesta']);
 }

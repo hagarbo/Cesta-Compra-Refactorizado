@@ -2,6 +2,7 @@
 
 const CART_FILES = ["listado.php", "cesta.php"];
 const NO_HEADER_FILES = ["login.php"];
+$contador_cesta = isset($_SESSION['cesta']) ? array_sum($_SESSION['cesta']) : 0;
 
 ?>
 
@@ -16,14 +17,18 @@ const NO_HEADER_FILES = ["login.php"];
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <!-- css Fontawesome CDN-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    <title><?php echo $title; ?></title>
+    <title>
+        <?php echo $title; ?>
+    </title>
 </head>
 
-<body style="background: gray">
-    <?php
-    $current_file = basename($_SERVER['PHP_SELF'], '');
-    if (!in_array($current_file, NO_HEADER_FILES)) :
-    ?>
+
+<?php
+$current_file = basename($_SERVER['PHP_SELF'], '');
+if (!in_array($current_file, NO_HEADER_FILES)) :
+?>
+
+    <body style="background: gray">
         <div class="float float-right d-inline-flex mt-2">
             <?php
             if (in_array($current_file, CART_FILES)) :

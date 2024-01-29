@@ -6,17 +6,22 @@ if (!is_user_logged()) {
     header("Location: login.php");
     exit;
 }
-
+$listado = array();
 if (isset($_SESSION['cesta'])) {
-    foreach ($_SESSION['cesta'] as $k => $v) {
-        $producto = consultar_producto($k);
-        $listado[$k] = [$producto->nombre, $producto->pvp];
+
+    foreach ($_SESSION['cesta'] as $product_id => $unidades) {
+        $producto = consultar_producto($product_id);
+        $listado[$product_id] = [
+            'product_name' => $producto->nombre,
+            'product_price' => $producto->pvp,
+            'product_units' => $unidades
+        ];
         $producto = null;
     }
 }
 
 // CARGAMOS EL HEADER
-$contador_cesta = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
+
 $title = "Cesta de la compra";
 require_once "templates/header.php";
 ?>

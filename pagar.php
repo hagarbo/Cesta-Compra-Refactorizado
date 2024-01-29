@@ -17,7 +17,10 @@ require_once "templates/header.php";
 <div class="container">
     <p class="font-weight-bold">Pedido realizado Correctamente.</p>
     <a href="listado.php" class="btn btn-info mt-3">Hacer otra Compra</a>
-    <?php mostrar_familias(); ?>
+    <?php
+    mostrar_familias();
+    vaciar_carrito();
+    ?>
 </div>
 
 </body>

@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'model/db_functions.php';
 require_once 'util/util.php';
 
@@ -8,19 +9,24 @@ if (!is_user_logged()) {
 }
 
 if (isset($_POST['vaciar'])) {
-    unset($_SESSION['cesta']);
+    vaciar_carrito();
 }
 
 if (isset($_POST['comprar'])) {
-    $datos = consultar_producto($_POST['id']);
+    $product_id = $_POST['id'];
+    $unidades =  intval($_POST['unidades']);
+
+    $suma_unidades = isset($_SESSION['cesta'][$product_id]) ? $unidades + $_SESSION['cesta'][$product_id] : $unidades;
+    if (!comprobar_unidades($suma_unidades)) error('Valor incorrecto del campo unidades - Limite de 3 unidades!', "listado");
+
+    $datos = consultar_producto($product_id);
     if ($datos !== false) {
-        $_SESSION['cesta'][$datos->id] = $datos->id;
-        gestionar_cookie_familia($datos->familia);
+        if (!isset($_SESSION['cesta'][$datos->id])) gestionar_cookie_familia($datos->familia);
+        $_SESSION['cesta'][$datos->id] = $suma_unidades;
     }
 }
 
 // CARGAMOS EL HEADER
-$contador_cesta = isset($_SESSION['cesta']) ? count($_SESSION['cesta']) : 0;
 $title = "Listado de productos";
 require_once "templates/header.php";
 ?>
@@ -32,7 +38,15 @@ require_once "templates/header.php";
         <a href="cesta.php" class="btn btn-success mr-2">Ir a Cesta</a>
         <input type='submit' value='Vaciar Carro' class="btn btn-danger" name="vaciar">
     </form>
-    <?php mostrar_productos(); ?>
+    <?php
+    if (isset($_SESSION['error'])) {
+        echo "<div class='mt-3 text-danger font-weight-bold text-lg'>";
+        echo $_SESSION['error'];
+        unset($_SESSION['error']);
+        echo "</div>";
+    }
+    mostrar_productos();
+    ?>
 </div>
 </body>
 

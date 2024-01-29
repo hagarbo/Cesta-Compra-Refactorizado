@@ -12,12 +12,12 @@ if (isset($_POST['login'])) {
     $nombre = trim($_POST['usuario']);
     $pass = trim($_POST['pass']);
     if (strlen($nombre) == 0 || strlen($pass) == 0) {
-        error("Error, El nombre o la contraseña no pueden contener solo espacios en blancos.");
+        error("Error, El nombre o la contraseña no pueden contener solo espacios en blancos.", "login");
     }
 
     if (validate_user($nombre, $pass) == false) {
         unset($_POST['login']);
-        error("Error, Nombre de usuario o password incorrecto");
+        error("Error, Nombre de usuario o password incorrecto", "login");
     }
 
     //Nos hemos validado correctamente creamos la sesion de usuario con el nombre de usuario
