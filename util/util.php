@@ -70,7 +70,7 @@ function gestionar_cookie_familia(string $cod_familia)
 /*************** MOSTRAR ELEMENTOS HTML***************************/
 /*****************************************************************/
 /*****************************************************************/
-
+const MAX_UNITS = 3;
 function mostrar_familias()
 {
     if (isset($_COOKIE["familias"])) {
@@ -101,11 +101,13 @@ function mostrar_productos()
         echo "<tr><th scope='row' class='text-center'>";
         echo "<form action='{$_SERVER['PHP_SELF']}' method='POST' id='form-{$value->id}'>";
         echo "<input type='hidden' name='id' value='{$value->id}'>";
-        echo "<input type='submit' class='btn btn-primary' name='comprar' value='Añadir'>";
+        $disabled_attr = isset($_SESSION['cesta'][$value->id]) && $_SESSION['cesta'][$value->id] == MAX_UNITS ? "disabled" : "";
+        echo "<input type='submit' class='btn btn-primary' name='comprar' value='Añadir' $disabled_attr>";
         echo "</form>";
         echo "</th>";
         echo "<td>{$value->nombre}, Precio: {$value->pvp} (€)</td>";
-        echo "<td><input type='number' name='unidades' value='1' form='form-{$value->id}' min='1' max='3'/></td>";
+        $max_units = isset($_SESSION['cesta'][$value->id]) ? MAX_UNITS - $_SESSION['cesta'][$value->id] : MAX_UNITS;
+        echo "<td><input type='number' name='unidades' value='1' form='form-{$value->id}' min='1' max='$max_units'/></td>";
         echo "<td class='text-center'>";
         echo isset($_SESSION['cesta'][$value->id]) ?
             "<i class='fas fa-check fa-2x'></i>" : "<i class='far fa-times-circle fa-2x'></i>";
@@ -123,7 +125,7 @@ function mostrar_cesta(array $cesta)
         $total = 0;
         echo '<table class="table table-striped mt-3">
             <thead>
-                <tr class="text-center">
+                <tr>
                     <th scope="col">Nombre</th>
                     <th scope="col">Precio Unidad</th>
                     <th scope="col">Unidades</th>

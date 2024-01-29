@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 require_once 'model/db_functions.php';
 require_once 'util/util.php';
 
@@ -17,11 +17,12 @@ if (isset($_POST['comprar'])) {
     $unidades =  intval($_POST['unidades']);
 
     $suma_unidades = isset($_SESSION['cesta'][$product_id]) ? $unidades + $_SESSION['cesta'][$product_id] : $unidades;
-    if (!comprobar_unidades($suma_unidades)) error('Valor incorrecto del campo unidades - Limite de 3 unidades!', "listado");
+    if (!comprobar_unidades($suma_unidades)) error('Valor incorrecto del campo unidades - El límite son 3 unidades!!!', "listado");
 
     $datos = consultar_producto($product_id);
     if ($datos !== false) {
-        if (!isset($_SESSION['cesta'][$datos->id])) gestionar_cookie_familia($datos->familia);
+        if (!isset($_SESSION['cesta'][$datos->id]))
+            gestionar_cookie_familia($datos->familia);
         $_SESSION['cesta'][$datos->id] = $suma_unidades;
     }
 }
